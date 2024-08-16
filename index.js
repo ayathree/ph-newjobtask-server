@@ -29,11 +29,28 @@ async function run() {
     const productCollection = client.db('companyDB').collection('products');
 
     // read 
-app.get('/allProducts', async(req,res)=>{
-  const query = productCollection.find();
-  const result = await query.toArray();
-  res.send(result)
-})
+    app.get('/allProducts', async (req, res) => {
+      const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
+      const limit = parseInt(req.query.limit) || 6;  // Default to 10 items per page if not provided
+      const skip = (page - 1) * limit;
+    
+      const query = {};  // Modify this if you want to filter or search
+    
+      try {
+        const total = await productCollection.countDocuments(query);
+        const products = await productCollection.find(query).skip(skip).limit(limit).toArray();
+    
+        res.send({
+          products,
+          currentPage: page,
+          totalPages: Math.ceil(total / limit),
+          totalProducts: total
+        });
+      } catch (error) {
+        res.status(500).send({ message: 'Error fetching products', error });
+      }
+    });
+    
 
 
     // Connect the client to the server	(optional starting in v4.7)
