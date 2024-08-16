@@ -30,21 +30,44 @@ async function run() {
 
     // read 
     app.get('/allProducts', async (req, res) => {
-      const page = parseInt(req.query.page) || 1;  // Default to page 1 if not provided
-      const limit = parseInt(req.query.limit) || 6;  // Default to 10 items per page if not provided
+      const filter = req.query.filter;
+      const filterTwo = req.query.filterTwo;
+      const sort = req.query.sort;
+      const page = parseInt(req.query.page) || 1;  
+      const limit = parseInt(req.query.limit) || 6;  
       const skip = (page - 1) * limit;
     
-      const query = {};  // Modify this if you want to filter or search
+      const query = {}; 
+      if (filter) {
+        query.categoryName = filter;
+        
+      }
+      if(filterTwo){
+        query.brandName = filterTwo;
+      }
+
+      const option ={};
+      if (sort) {
+        if (sort === 'low') {
+          option.price = 1; 
+        } else if (sort === 'high') {
+          option.price = -1; 
+        } else if (sort === 'new') {
+          option.dateAdded = -1;  
+        }
+      }
     
       try {
         const total = await productCollection.countDocuments(query);
-        const products = await productCollection.find(query).skip(skip).limit(limit).toArray();
+        const products = await productCollection.find(query).sort(option).skip(skip).limit(limit).toArray();
+        
     
         res.send({
           products,
           currentPage: page,
           totalPages: Math.ceil(total / limit),
-          totalProducts: total
+          totalProducts: total,
+          
         });
       } catch (error) {
         res.status(500).send({ message: 'Error fetching products', error });
