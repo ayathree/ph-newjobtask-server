@@ -33,6 +33,8 @@ async function run() {
       const filter = req.query.filter;
       const filterTwo = req.query.filterTwo;
       const sort = req.query.sort;
+      const minPrice = parseFloat(req.query.minPrice); 
+      const maxPrice = parseFloat(req.query.maxPrice); 
       const page = parseInt(req.query.page) || 1;  
       const limit = parseInt(req.query.limit) || 6;  
       const skip = (page - 1) * limit;
@@ -44,6 +46,14 @@ async function run() {
       }
       if(filterTwo){
         query.brandName = filterTwo;
+      }
+
+      if (minPrice && maxPrice) {
+        query.price = { $gte: minPrice, $lte: maxPrice }; 
+      } else if (minPrice) {
+        query.price = { $gte: minPrice }; 
+      } else if (maxPrice) {
+        query.price = { $lte: maxPrice }; 
       }
 
       const option ={};
