@@ -14,7 +14,7 @@ cd repo-name
 ```
 ### 2. Install Dependencies
 ```bash
-npm install
+npm dev
 ```
 Or if you're using yarn:
 ```bash
