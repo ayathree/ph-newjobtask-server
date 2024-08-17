@@ -33,13 +33,16 @@ async function run() {
       const filter = req.query.filter;
       const filterTwo = req.query.filterTwo;
       const sort = req.query.sort;
+      const search = req.query.search;
       const minPrice = parseFloat(req.query.minPrice); 
       const maxPrice = parseFloat(req.query.maxPrice); 
       const page = parseInt(req.query.page) || 1;  
       const limit = parseInt(req.query.limit) || 6;  
       const skip = (page - 1) * limit;
     
-      const query = {}; 
+      const query = {
+        productName : {$regex: search, $options:'i'}
+      }; 
       if (filter) {
         query.categoryName = filter;
         
