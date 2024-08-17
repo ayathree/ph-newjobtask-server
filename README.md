@@ -10,7 +10,7 @@ This is the backend of the Product Gallery  application, which provides the REST
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/ayathree/ph-newjobtask-server.git
-cd repo-name
+cd ph-newjobtask-server
 ```
 ### 2. Install Dependencies
 ```bash
